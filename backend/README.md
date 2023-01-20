@@ -43,7 +43,7 @@ Output:
 > neobank-api@1.0.0 start
 > node index.js
 
-App running on port 3000.
+App running on port 3001.
 
 ```
 

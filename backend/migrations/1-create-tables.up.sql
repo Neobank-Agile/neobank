@@ -21,3 +21,10 @@ created_by varchar not null,
 status varchar not null
 );
 
+create table rates (
+id uuid default gen_random_uuid () primary key,
+curr_from varchar not null,
+curr_to varchar not null,
+rate numeric not null
+);
+

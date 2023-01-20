@@ -1,7 +1,6 @@
 create table accounts (
 id uuid default gen_random_uuid () primary key,
-first_name varchar not null,
-last_name varchar not null,
+username varchar not null,
 email varchar not null,
 phone varchar ,
 password varchar not null, 

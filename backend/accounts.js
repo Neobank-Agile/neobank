@@ -1,7 +1,6 @@
 const pool = require("./config/database");
 
 const createAccount = (request, response) => {
-  console.log(request.body);
   const { username, email, phone, password, second_factor, status } =
     request.body;
   pool.query(

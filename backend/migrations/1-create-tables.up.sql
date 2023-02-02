@@ -8,6 +8,8 @@ second_factor varchar not null default 'email',
 status varchar not null
 );
 
+create unique index ix_uniq_email on accounts (email);
+
 create table transactions (
 id uuid default gen_random_uuid () primary key,
 type varchar not null,

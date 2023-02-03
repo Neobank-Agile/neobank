@@ -51,8 +51,11 @@ const authorized = (request, response, next) => {
   const token = tokenArr[1];
 
   try {
+    // decode token
     const decoded = jwt.verify(token, jwtSecretKey);
-    console.log("authorized:" + decoded.UserId);
+    // store decoded user id in local var
+    response.locals.userId = decoded.userId;
+    console.log("authorized:" + decoded.userId);
   } catch (err) {
     response.status(401).send({ error: invalidAuthMessage });
     return;

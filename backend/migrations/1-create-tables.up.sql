@@ -30,3 +30,14 @@ curr_to varchar not null,
 rate numeric not null
 );
 
+create table cards (
+id uuid default gen_random_uuid () primary key,
+account_id uuid not null,
+card_type varchar not null,
+card_number varchar not null,
+exp_month numeric not null,
+exp_year numeric not null
+);
+
+alter table cards add constraint card_account_fk foreign key (account_id) references accounts (id);
+

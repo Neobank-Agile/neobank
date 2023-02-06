@@ -8,7 +8,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const accounts = require("./accounts");
 const rates = require("./rates");
-const session = require("./session");
+const cards = require("./cards");
+const auth = require("./auth");
 
 app.use(morgan("tiny"));
 app.use(bodyParser.json());
@@ -20,11 +21,17 @@ app.use(
 
 // routes
 app.post("/accounts", accounts.createAccount);
-app.put("/accounts", accounts.updateAccount);
-app.get("/accounts", accounts.getAccount);
-app.post("/rates", rates.createRate);
-app.get("/rates", rates.getRates);
-app.post("/login", session.login);
+app.post("/login", auth.login);
+
+// authorized routes
+app.put("/accounts", auth.authorized, accounts.updateAccount);
+app.get("/accounts", auth.authorized, accounts.getAccount);
+app.get("/rates", auth.authorized, rates.getRates);
+app.post("/cards", auth.authorized, cards.createCard);
+app.get("/cards", auth.authorized, cards.getCards);
+
+// administrative routes
+app.post("/rates", auth.admin, rates.createRate);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);

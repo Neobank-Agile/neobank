@@ -9,6 +9,7 @@ const createAccount = (request, response) => {
     (error, results) => {
       if (error) {
         response.status(500).send({ error });
+        return;
       }
 
       response.status(201).send({

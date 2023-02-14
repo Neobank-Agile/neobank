@@ -4,6 +4,7 @@ require("dotenv").config();
 const port = process.env.PORT || 3001;
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
 const accounts = require("./accounts");
@@ -11,6 +12,7 @@ const rates = require("./rates");
 const cards = require("./cards");
 const auth = require("./auth");
 
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(bodyParser.json());
 app.use(

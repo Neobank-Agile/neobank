@@ -5,6 +5,7 @@ import { storeToken } from "./store";
 import loading from "./loading.svg";
 import { API_URL } from "./api";
 import Menu from "./Menu";
+import MessageBox from "./MessageBox";
 
 const LoginPage = () => {
   let { action } = useParams();
@@ -23,27 +24,36 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const validateFields = () => {
+    let result = true;
+    let errs = [];
     const phoneExp =
       /^\+?([0-9]{2})\)?[-. ]?([0-9]{2})?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
-    const emailExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const emailExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
-    if (!password || password.length < 8) {
-      setErrors([...errors, "password should have a minimum of 8 characters"]);
-      setValidPass(false);
-    }
     if (!username || username.length < 4) {
-      setErrors([...errors, "username should have a minimum of 4 characters"]);
+      errs = [...errs, "Username should have a minimum of 4 characters"];
       setValidUser(false);
+      result = false;
     }
     if (!phone || !phone.match(phoneExp)) {
-      setErrors([...errors, "invalid phone"]);
+      errs = [...errs, "Invalid phone"];
       setValidPhone(false);
+      result = false;
     }
     if (!email || !email.match(emailExp)) {
-      setErrors([...errors, "invalid email"]);
+      errs = [...errs, "Invalid email"];
       setValidEmail(false);
+      result = false;
     }
+    if (!password || password.length < 8) {
+      errs = [...errs, "Password should have a minimum of 8 characters"];
+      setValidPass(false);
+      result = false;
+    }
+    setErrors(errs);
+    return result;
   };
+
   const postAccount = async () => {
     setIsLoading(true);
     setErrors([]);
@@ -82,27 +92,21 @@ const LoginPage = () => {
               </div>
             </div>
             <div className="pa3">
-              <fieldset id="sign_up" className="ba b--transparent ph0 mh0 mw6">
+              <fieldset className="ba b--transparent ph0 mh0 mw6">
                 <div className="mt3">
-                  <label className="db fw6 lh-copy f5" for="email-address">
-                    Email
-                  </label>
+                  <label className="db fw6 lh-copy f5">Email</label>
                   <input
                     className="pa2 input-reset ba br3 b--light-blue bg-transparent hover-bg-blue hover-white w-100"
                     type="email"
                     name="email-address"
-                    id="email-address"
                   />
                 </div>
                 <div className="mv3">
-                  <label className="db fw6 lh-copy f5" for="password">
-                    Password
-                  </label>
+                  <label className="db fw6 lh-copy f5">Password</label>
                   <input
                     className="b pa2 input-reset ba br3 b--light-blue bg-transparent hover-bg-blue hover-white w-100"
                     type="password"
                     name="password"
-                    id="password"
                   />
                 </div>
               </fieldset>
@@ -136,18 +140,15 @@ const LoginPage = () => {
               </div>
             </div>
             <div className="pa3">
-              <fieldset id="sign_up" className="ba b--transparent ph0 mh0 mw6">
+              <fieldset className="ba b--transparent ph0 mh0 mw6">
                 <div className="mt3">
-                  <label className="db fw6 lh-copy f5" for="username">
-                    Username
-                  </label>
+                  <label className="db fw6 lh-copy f5">Username</label>
                   <input
                     className={`pa2 input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-100 ${
                       validUser ? "b--light-blue" : "b--red"
                     }`}
                     type="text"
                     name="username"
-                    id="username"
                     onChange={(ev) => {
                       setUsername(ev.target.value);
                       setValidUser(true);
@@ -155,33 +156,28 @@ const LoginPage = () => {
                   />
                 </div>
                 <div className="mt3">
-                  <label className="db fw6 lh-copy f5" for="email-address">
-                    Email
-                  </label>
+                  <label className="db fw6 lh-copy f5">Email</label>
                   <input
                     className={`pa2 input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-100 ${
                       validEmail ? "b--light-blue" : "b--red"
                     }`}
                     type="email"
                     name="email-address"
-                    id="email-address"
                     onChange={(ev) => {
                       setEmail(ev.target.value);
                       setValidEmail(true);
                     }}
+                    value={email}
                   />
                 </div>
                 <div className="mt3">
-                  <label className="db fw6 lh-copy f5" for="phone">
-                    Phone Number
-                  </label>
+                  <label className="db fw6 lh-copy f5">Phone</label>
                   <input
                     className={`pa2 input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-100 ${
                       validPhone ? "b--light-blue" : "b--red"
                     }`}
                     type="text"
                     name="phone"
-                    id="phone"
                     onChange={(ev) => {
                       setPhone(ev.target.value);
                       setValidPhone(true);
@@ -189,17 +185,14 @@ const LoginPage = () => {
                     value={phone}
                   />
                 </div>
-                <div className="mv3">
-                  <label className="db fw6 lh-copy f5" for="password">
-                    Password
-                  </label>
+                <div className="mt3 mb0">
+                  <label className="db fw6 lh-copy f5">Password</label>
                   <input
                     className={`b pa2 input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-100 ${
                       validPass ? "b--light-blue" : "b--red"
                     }`}
                     type="password"
                     name="password"
-                    id="password"
                     onChange={(ev) => {
                       setPassword(ev.target.value);
                       setValidPass(true);
@@ -208,7 +201,10 @@ const LoginPage = () => {
                   />
                 </div>
               </fieldset>
-              <div className="center tc">
+              <div>
+                <MessageBox messages={errors} type={"error"} />
+              </div>
+              <div className="center tc mt3">
                 {isLoading ? (
                   <div>
                     <img className="w3 h3 dib" src={loading} alt="loading..." />

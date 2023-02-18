@@ -5,4 +5,3 @@ curl -H 'Content-Type: application/json' -H "Authorization: Admin ${TOKEN}" -d '
 curl -H 'Content-Type: application/json' -H "Authorization: Admin ${TOKEN}" -d '{"from":"USD", "to": "BTC","rate": 0.000042}' http://localhost:3001/rates
 curl -H 'Content-Type: application/json' -H "Authorization: Admin ${TOKEN}" -d '{"from":"EUR", "to": "BTC","rate": 140.90}' http://localhost:3001/rates
 curl -H 'Content-Type: application/json' -H "Authorization: Admin ${TOKEN}" -d '{"from":"BTC", "to": "EUR","rate": 22222.40}' http://localhost:3001/rates
-

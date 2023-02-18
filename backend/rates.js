@@ -17,19 +17,17 @@ const createRate = (request, response) => {
           .send({ error: "invalid parameters to create rate" });
         return;
       }
-
-      response.status(201).send({
-        id: results.rows[0].id,
-        from,
-        to,
-        rate,
-      });
-    }
-  );
+    );
+  }
+  catch (err) {
+    console.error(err);
+  }
 };
 
 const getRates = (request, response) => {
-  const { from, to } = request.query;
+  const { timestamp, from, to } = request.query;
+  // debug
+  console.log(timestamp, from, to);
   pool.query(
     "select curr_from,curr_to, max(rate) as rate from rates where curr_from  = coalesce($1,curr_from) and curr_to = coalesce($2,curr_to) group by 1,2 ",
     [from, to],

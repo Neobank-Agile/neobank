@@ -14,11 +14,6 @@ DELIMITER ','
 CSV HEADER;
 
 COPY rates (time_stamp, rate, curr_from, curr_to)
-FROM '/usr/data/usd-gbp.csv'
-DELIMITER ','
-CSV HEADER;
-
-COPY rates (time_stamp, rate, curr_from, curr_to)
 FROM '/usr/data/btc-usd.csv'
 DELIMITER ','
 CSV HEADER;

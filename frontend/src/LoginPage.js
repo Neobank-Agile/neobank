@@ -10,7 +10,7 @@ import MessageBox from "./MessageBox";
 const LoginPage = () => {
   let { action } = useParams();
   const [tab, setTab] = useState(action);
-  const [errors, setErrors] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
@@ -50,14 +50,14 @@ const LoginPage = () => {
       setValidPass(false);
       result = false;
     }
-    setErrors(errs);
+    setMessages(errs);
     return result;
   };
 
   const postAccount = async () => {
     setIsLoading(true);
-    setErrors([]);
-    const respPost = await restFetch(
+    setMessages([]);
+    const resp = await restFetch(
       "POST",
       API_URL + `/accounts`,
       { "Content-Type": "application/json" },
@@ -70,8 +70,44 @@ const LoginPage = () => {
         status: "not verified",
       })
     );
-    console.log(respPost);
     setIsLoading(false);
+    if (resp.hasOwnProperty("error")) {
+      // post error, display error message
+      setMessages([resp.error]);
+    } else {
+      // succesful post move to login tab
+      setMessages([]);
+      setTab("login");
+      setMessages(["Account successfuly created, please login to continue"]);
+    }
+  };
+
+  const postLogin = async () => {
+    setIsLoading(true);
+    setMessages([]);
+    const resp = await restFetch(
+      "POST",
+      API_URL + `/login`,
+      { "Content-Type": "application/json" },
+      JSON.stringify({
+        email,
+        password,
+      })
+    );
+    setIsLoading(false);
+    if (resp.hasOwnProperty("error")) {
+      // post error, display error message
+      setMessages([resp.error]);
+    } else {
+      // succesful post move main page
+      setMessages([]);
+      if (resp.hasOwnProperty("token")) {
+        storeToken(resp.token);
+        navigate("/main");
+      } else {
+        setMessages(["Unexpected error: " + JSON.stringify(resp)]);
+      }
+    }
   };
 
   return (
@@ -86,7 +122,10 @@ const LoginPage = () => {
               </div>
               <div
                 className="link fl w-50 pa3 bg-blue white f3 br3 br--right pointer"
-                onClick={() => setTab("signup")}
+                onClick={() => {
+                  setMessages([]);
+                  setTab("signup");
+                }}
               >
                 Sign Up
               </div>
@@ -96,27 +135,43 @@ const LoginPage = () => {
                 <div className="mt3">
                   <label className="db fw6 lh-copy f5">Email</label>
                   <input
-                    className="pa2 input-reset ba br3 b--light-blue bg-transparent hover-bg-blue hover-white w-100"
+                    className={`pa2 input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-100 ${
+                      validEmail ? "b--light-blue" : "b--red"
+                    }`}
                     type="email"
                     name="email-address"
+                    onChange={(ev) => {
+                      setEmail(ev.target.value);
+                      setValidEmail(true);
+                    }}
+                    value={email}
                   />
                 </div>
                 <div className="mv3">
                   <label className="db fw6 lh-copy f5">Password</label>
                   <input
-                    className="b pa2 input-reset ba br3 b--light-blue bg-transparent hover-bg-blue hover-white w-100"
+                    className={`pa2 input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-100 ${
+                      validPass ? "b--light-blue" : "b--red"
+                    }`}
                     type="password"
                     name="password"
+                    onChange={(ev) => {
+                      setPassword(ev.target.value);
+                      setValidPass(true);
+                    }}
+                    value={password}
                   />
                 </div>
               </fieldset>
+              <div>
+                <MessageBox messages={messages} />
+              </div>
               <div className="center tc">
                 <div
                   className="link dim br3 bg-blue white pv2 ph3 f5 f5-l dib mr3 mr4-l pointer"
                   title="Login"
                   onClick={() => {
-                    storeToken("MOCK_TOKEN");
-                    navigate("/main");
+                    postLogin();
                   }}
                 >
                   Log In
@@ -131,7 +186,10 @@ const LoginPage = () => {
             <div className="w-100 center tc bg-blue">
               <div
                 className="link fl w-50 pa3 bg-blue white f3 br3 br--left br--top pointer"
-                onClick={() => setTab("login")}
+                onClick={() => {
+                  setMessages([]);
+                  setTab("login");
+                }}
               >
                 Login
               </div>
@@ -153,6 +211,7 @@ const LoginPage = () => {
                       setUsername(ev.target.value);
                       setValidUser(true);
                     }}
+                    value={username}
                   />
                 </div>
                 <div className="mt3">
@@ -202,7 +261,7 @@ const LoginPage = () => {
                 </div>
               </fieldset>
               <div>
-                <MessageBox messages={errors} type={"error"} />
+                <MessageBox messages={messages} />
               </div>
               <div className="center tc mt3">
                 {isLoading ? (

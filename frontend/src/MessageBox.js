@@ -1,6 +1,5 @@
 const MessageBox = (props) => {
   const messages = props.messages || [];
-  const type = props.type || "alert";
 
   if (messages.length < 1) {
     return <></>;

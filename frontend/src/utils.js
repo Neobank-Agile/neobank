@@ -12,7 +12,14 @@ export const restFetch = async (method, URL, headers, body) => {
     if (response.ok || response.status === 304) {
       return await response.json();
     }
-    return { error: await response.text() };
+    const err = await response.json();
+    let errMsg;
+    if (err.error && err.error.detail) {
+      errMsg = err.error.detail;
+    } else {
+      errMsg = err.error;
+    }
+    return { statusCode: response.status, error: errMsg };
   } catch (e) {
     return { error: e.message };
   }

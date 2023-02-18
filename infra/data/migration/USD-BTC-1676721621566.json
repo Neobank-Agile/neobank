@@ -64,7 +64,6 @@
         "type": "postgres",
         "uid": "${DS_POSTGRESQL}"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -144,8 +143,9 @@
           },
           "editorMode": "code",
           "format": "table",
+          "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT time_stamp, rate FROM rates WHERE curr_from='btc' AND curr_to='usd';",
+          "rawSql": "SELECT time_stamp, rate FROM rates WHERE curr_from='usd' AND curr_to='btc';",
           "refId": "A",
           "sql": {
             "columns": [
@@ -166,7 +166,7 @@
           }
         }
       ],
-      "title": "BTC-USD",
+      "title": "USD-BTC",
       "type": "timeseries"
     }
   ],
@@ -183,8 +183,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "BTC-USD",
-  "uid": "roEqGf14k",
-  "version": 1,
+  "title": "USD-BTC",
+  "uid": "t9Ui7f14z",
+  "version": 2,
   "weekStart": ""
 }

@@ -13,7 +13,7 @@ sudo init_grafana.sh
 The server will start on port 2999
 
 ```rb
-/usr/data/grafna-9.3.6/bin/grafana-server
+/usr/neobank/grafna-9.3.6/bin/grafana-server
 ```
 
 ## 3. Aaccess the web service at localhost:2999

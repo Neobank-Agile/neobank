@@ -38,7 +38,7 @@ app.get("/transactions", auth.authorized, transactions.getTransactions);
 app.get("/balances", auth.authorized, transactions.getBalances);
 
 // administrative routes
-app.post("/rates", rates.createRate);
+app.post("/rates", auth.admin, rates.createRate);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);

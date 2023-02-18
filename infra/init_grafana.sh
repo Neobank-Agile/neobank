@@ -6,9 +6,13 @@ tar -zxvf grafana-9.3.6.linux-amd64.tar.gz
 
 rm -rf grafana-9.3.6.linux-amd64.tar.gz
 
-mv ./data/migration/defaults.ini ./grafana-9.3.6/conf/defaults.ini
+sudo service postgresql start
 
 sudo mkdir /usr/data/
+
+sudo mv ./grafana-9.3.6 /usr/data/
+
+mv ./data/migration/defaults.ini /usr/data/grafana-9.3.6/conf/defaults.ini
 
 sudo cp ./data/postgres/* /usr/data/
 

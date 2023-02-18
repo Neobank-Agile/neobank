@@ -9,11 +9,11 @@ CREATE TABLE rates (
 );
 
 COPY rates (time_stamp, rate, curr_from, curr_to)
-FROM '/usr/data/usd-eur.csv'
+FROM '/usr/neobank/usd-eur.csv'
 DELIMITER ','
 CSV HEADER;
 
 COPY rates (time_stamp, rate, curr_from, curr_to)
-FROM '/usr/data/btc-usd.csv'
+FROM '/usr/neobank/usd-btc.csv'
 DELIMITER ','
 CSV HEADER;

@@ -26,7 +26,20 @@ const SettingsPage = () => {
   const [validNumber, setValidNumber] = useState(true);
   const [validExpiration, setValidExpiration] = useState(true);
   const [validCSV, setValidCSV] = useState(true);
+  const [holder, setHolder] = useState("");
+  const [number, setNumber] = useState("");
+  const [expiration, setExpiration] = useState("");
+  const [csv, setCSV] = useState("");
   const [addMode, setAddMode] = useState(false);
+
+  const removeCard = (ix) => {
+    setCards([...cards.slice(0, ix), ...cards.slice(ix + 1)]);
+  };
+
+  const addCard = () => {
+    setCards([...cards, { holder, number, expiration, csv }]);
+    setAddMode(false);
+  };
 
   return (
     <>
@@ -49,6 +62,8 @@ const SettingsPage = () => {
                     }`}
                     type="text"
                     name="number"
+                    onChange={(ev) => setNumber(ev.target.value)}
+                    value={number}
                   />
                 </div>
                 <div className="mv3">
@@ -59,6 +74,8 @@ const SettingsPage = () => {
                     }`}
                     type="text"
                     name="holder"
+                    onChange={(ev) => setHolder(ev.target.value)}
+                    value={holder}
                   />
                 </div>
                 <div className="mv3">
@@ -69,6 +86,8 @@ const SettingsPage = () => {
                     }`}
                     type="text"
                     name="expiration"
+                    onChange={(ev) => setExpiration(ev.target.value)}
+                    value={expiration}
                   />
                 </div>
                 <div className="mv3">
@@ -79,6 +98,8 @@ const SettingsPage = () => {
                     }`}
                     type="password"
                     name="csv"
+                    onChange={(ev) => setCSV(ev.target.value)}
+                    value={csv}
                   />
                 </div>
               </fieldset>
@@ -89,7 +110,7 @@ const SettingsPage = () => {
                 <div
                   className="link dim br3 bg-blue white pv2 ph3 f5 f5-l dib mr3 mr4-l pointer"
                   title="Add"
-                  onClick={() => setAddMode(false)}
+                  onClick={() => addCard()}
                 >
                   Add
                 </div>
@@ -117,13 +138,16 @@ const SettingsPage = () => {
           </div>
           {cards.length > 0 ? (
             <div className="cf pa3 center">
-              {cards.map((el) => (
+              {cards.map((el, ix) => (
                 <div className="fl w-50 w-25-m w-20-l pa2 code ba ma2 br3">
                   <dl className="mt2 f4 white lh-copy">
                     <dt className="clip">Type</dt>
                     <dd className="ml0 truncate w-100">
                       {getCardType(el.number)}
-                      <span className="fr link dim pointer">
+                      <span
+                        className="fr link dim pointer"
+                        onClick={() => removeCard(ix)}
+                      >
                         <img className="w2 h2 dib" src={trash} alt="trash" />{" "}
                       </span>
                     </dd>

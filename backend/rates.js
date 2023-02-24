@@ -37,7 +37,7 @@ const getRates = (request, response) => {
   else {
     from = from ?? 'eur';
     to = to ?? 'usd';
-    query = "select time_stamp, 1/rate from rates where time_stamp=COALESCE($1, '2023-02-15')::timestamp and curr_from=$3 and curr_to=$2;"
+    query = "select time_stamp, (1/rate) as rate from rates where time_stamp=COALESCE($1, '2023-02-15')::timestamp and curr_from=$3 and curr_to=$2;"
   }
 
   pool.query(

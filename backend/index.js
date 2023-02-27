@@ -31,6 +31,7 @@ app.get("/accounts", auth.authorized, accounts.getAccount);
 app.get("/rates", auth.authorized, rates.getRates);
 app.post("/cards", auth.authorized, cards.createCard);
 app.get("/cards", auth.authorized, cards.getCards);
+app.delete("/cards", auth.authorized, cards.deleteCard);
 
 // administrative routes
 app.post("/rates", auth.admin, rates.createRate);

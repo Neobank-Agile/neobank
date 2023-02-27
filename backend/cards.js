@@ -1,12 +1,12 @@
 const pool = require("./config/database");
 
 const createCard = (request, response) => {
-  const { card_type, card_number, exp_month, exp_year } = request.body;
+  const { card_type, card_number, expiration, holder, csv } = request.body;
   // retrieve user id from auth token
   const account_id = response.locals.userId;
   pool.query(
-    "insert into cards (account_id,card_type,card_number,exp_month,exp_year) values($1, $2, $3, $4, $5) returning id",
-    [account_id, card_type, card_number, exp_month, exp_year],
+    "insert into cards (account_id,card_type,card_number,expiration,holder,csv) values($1, $2, $3, $4, $5, $6) returning id",
+    [account_id, card_type, card_number, expiration, holder, csv],
     (error, results) => {
       if (error) {
         response.status(500).send({ error });
@@ -17,8 +17,9 @@ const createCard = (request, response) => {
         account_id,
         card_type,
         card_number,
-        exp_month,
-        exp_year,
+        expiration,
+        holder,
+        csv,
       });
     }
   );
@@ -40,7 +41,21 @@ const getCards = (request, response) => {
   );
 };
 
+const deleteCard = (request, response) => {
+  const { id } = request.query;
+  // retrieve user id from auth token
+  const account_id = response.locals.userId;
+  pool.query("delete from cards where id = $1", [id], (error, results) => {
+    if (error) {
+      response.status(500).send({ error });
+    }
+
+    response.status(200).send({ ok: true });
+  });
+};
+
 module.exports = {
   createCard,
   getCards,
+  deleteCard,
 };

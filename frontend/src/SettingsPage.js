@@ -1,27 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 //import { useParams, useNavigate } from "react-router-dom";
 import Menu from "./Menu";
 import MessageBox from "./MessageBox";
-import { getCardType } from "./utils";
+import { getCardType, restFetch } from "./utils";
+import { API_URL } from "./api";
+import loading from "./loading.svg";
 import trash from "./trash.svg";
 import plus from "./plus.svg";
+import { getToken } from "./store";
 
 const SettingsPage = () => {
   const [messages, setMessages] = useState([]);
-  const [cards, setCards] = useState([
-    {
-      number: "4026 5678 9012 3456",
-      holder: "Christian Kuroki",
-      expiration: "02-2025",
-      csv: 123,
-    },
-    {
-      number: "3780 1234 5678 9012",
-      holder: "Christian Kuroki",
-      expiration: "10-2028",
-      csv: 456,
-    },
-  ]);
+  const [cards, setCards] = useState([]);
   const [validHolder, setValidHolder] = useState(true);
   const [validNumber, setValidNumber] = useState(true);
   const [validExpiration, setValidExpiration] = useState(true);
@@ -31,19 +21,90 @@ const SettingsPage = () => {
   const [expiration, setExpiration] = useState("");
   const [csv, setCSV] = useState("");
   const [addMode, setAddMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const removeCard = (ix) => {
-    setCards([...cards.slice(0, ix), ...cards.slice(ix + 1)]);
+  useEffect(() => {
+    const getCards = async () => {
+      const token = getToken();
+      setIsLoading(true);
+      const resp = await restFetch("GET", API_URL + `/cards`, {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      });
+      setIsLoading(false);
+      if (resp.hasOwnProperty("error")) {
+        // post error, display error message
+        setMessages([resp.error]);
+      } else {
+        // succesful fetch
+        setMessages([]);
+        console.log(JSON.stringify(resp));
+        setCards(resp);
+      }
+    };
+    getCards();
+  }, []);
+
+  const removeCard = async (ix) => {
+    const token = getToken();
+    const id = cards[ix].id;
+    setIsLoading(true);
+    const resp = await restFetch("DELETE", API_URL + `/cards?id=${id}`, {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+    setIsLoading(false);
+    if (resp.hasOwnProperty("error")) {
+      // post error, display error message
+      setMessages([resp.error]);
+    } else {
+      // succesful delete
+      setMessages([]);
+      setCards([...cards.slice(0, ix), ...cards.slice(ix + 1)]);
+    }
   };
 
-  const addCard = () => {
-    setCards([...cards, { holder, number, expiration, csv }]);
-    setAddMode(false);
+  const addCard = async () => {
+    const token = getToken();
+    const cardType = getCardType(number);
+    const newCard = {
+      card_type: cardType,
+      card_number: number,
+      holder,
+      expiration,
+      csv,
+    };
+    setIsLoading(true);
+    const resp = await restFetch(
+      "POST",
+      API_URL + `/cards`,
+      {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      JSON.stringify(newCard)
+    );
+    setIsLoading(false);
+    console.log(resp);
+    if (resp.hasOwnProperty("error")) {
+      // post error, display error message
+      setMessages([resp.error]);
+    } else {
+      // succesful createk
+      setMessages([]);
+      setCards([...cards, newCard]);
+      setAddMode(false);
+    }
   };
 
   return (
     <>
       <Menu />
+      {isLoading ? (
+        <div className="center tc mt3">
+          <img className="w3 h3 dib" src={loading} alt="loading..." />
+        </div>
+      ) : null}
       {addMode ? (
         <main className="pa4 white">
           <form className="measure center ba b--light-blue br3">
@@ -139,20 +200,23 @@ const SettingsPage = () => {
           {cards.length > 0 ? (
             <div className="cf pa3 center">
               {cards.map((el, ix) => (
-                <div className="fl w-50 w-25-m w-20-l pa2 code ba ma2 br3">
+                <div
+                  key={`${el.id}`}
+                  className="fl w-50 w-25-m w-20-l pa2 code ba ma2 br3"
+                >
                   <dl className="mt2 f4 white lh-copy">
                     <dt className="clip">Type</dt>
                     <dd className="ml0 truncate w-100">
-                      {getCardType(el.number)}
+                      {el.card_type}
                       <span
                         className="fr link dim pointer"
-                        onClick={() => removeCard(ix)}
+                        onClick={async () => await removeCard(ix)}
                       >
                         <img className="w2 h2 dib" src={trash} alt="trash" />{" "}
                       </span>
                     </dd>
                     <dt className="clip">Number</dt>
-                    <dd className="ml0 truncate w-100">{el.number}</dd>
+                    <dd className="ml0 truncate w-100">{el.card_number}</dd>
                     <dt className="clip">Name</dt>
                     <dd className="ml0 truncate w-100">{el.holder}</dd>
                     <dt className="clip">Exp</dt>

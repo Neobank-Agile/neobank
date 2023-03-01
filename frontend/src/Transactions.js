@@ -72,7 +72,7 @@ const Transactions = () => {
                       <td className="tl pv3 pr3 bb b--black-20">{el.type}</td>
                       <td className="tl pv3 pr3 bb b--black-20">{el.amount}</td>
                       <td className="tl pv3 pr3 bb b--black-20">
-                        {el.type == "deposit" || el.type == "exchange_buy"
+                        {el.type === "deposit" || el.type === "exchange_buy"
                           ? el.destination
                           : el.source}
                       </td>

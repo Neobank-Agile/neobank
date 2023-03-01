@@ -23,7 +23,7 @@ const createRate = (request, response) => {
 const getRates = (request, response) => {
   const { from, to } = request.query;
   pool.query(
-    "select * from rates where curr_from  = coalesce($1,curr_from) and curr_to = coalesce($2,curr_to) ",
+    "select curr_from,curr_to, max(rate) as rate from rates where curr_from  = coalesce($1,curr_from) and curr_to = coalesce($2,curr_to) group by 1,2 ",
     [from, to],
     (error, results) => {
       if (error) {

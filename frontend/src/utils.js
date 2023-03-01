@@ -1,6 +1,4 @@
 export const restFetch = async (method, URL, headers, body) => {
-  console.log("body:");
-  console.log(JSON.stringify(body));
   try {
     const response = await fetch(URL, {
       method: method,

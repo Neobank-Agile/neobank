@@ -25,11 +25,11 @@ app.use(
 // routes
 app.post("/accounts", accounts.createAccount);
 app.post("/login", auth.login);
+app.get("/rates", rates.getRates);
 
 // authorized routes
 app.put("/accounts", auth.authorized, accounts.updateAccount);
 app.get("/accounts", auth.authorized, accounts.getAccount);
-app.get("/rates", auth.authorized, rates.getRates);
 app.post("/cards", auth.authorized, cards.createCard);
 app.get("/cards", auth.authorized, cards.getCards);
 app.delete("/cards", auth.authorized, cards.deleteCard);

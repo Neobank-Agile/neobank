@@ -45,7 +45,7 @@ const getBalances = (request, response) => {
   // retrieve user id from auth token
   const account_id = response.locals.userId;
   pool.query(
-    "select (case when type = 'deposit' or type = 'exchange_buy' then destination when type = 'withdrawal' or type = 'transfer' or type = 'exchange_sell' then source end ) currency, sum ((amount * case when type = 'deposit' or type = 'exchange_buy' then 1 when type = 'withdrawal' or type = 'transfer' or type = 'exchange_sell' then -1 end )) as balance from transactions where account_id = $1 group by 1",
+    "select (case when type = 'deposit' or type = 'exchange_buy' then destination when type = 'withdraw' or type = 'transfer' or type = 'exchange_sell' then source end ) currency, sum ((amount * case when type = 'deposit' or type = 'exchange_buy' then 1 when type = 'withdraw' or type = 'transfer' or type = 'exchange_sell' then -1 end )) as balance from transactions where account_id = $1 group by 1",
     [account_id],
     (error, results) => {
       if (error) {

@@ -1,4 +1,4 @@
-import { getToken, storeToken, removeToken } from "./store";
+import { getToken, removeToken } from "./store";
 import { useNavigate } from "react-router-dom";
 
 const Menu = () => {

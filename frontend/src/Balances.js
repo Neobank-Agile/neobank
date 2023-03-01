@@ -45,8 +45,11 @@ const Balances = () => {
         ) : (
           <div className="cf tl">
             <div className="f3 fl w-100">Balances</div>
-            {balances.map((el) => (
-              <dl className="fl fn-l w-50 dib-l w-auto-l lh-title mr5-l ba pa3 br3">
+            {balances.map((el, ix) => (
+              <dl
+                key={ix}
+                className="fl fn-l w-50 dib-l w-auto-l lh-title mr5-l ba pa3 br3"
+              >
                 <dd className="f4 fw4 ml0">{el.currency}</dd>
                 <dd className="f3 fw6 ml0">{el.balance}</dd>
               </dl>

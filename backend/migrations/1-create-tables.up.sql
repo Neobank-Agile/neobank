@@ -12,16 +12,17 @@ create unique index ix_uniq_email on accounts (email);
 
 create table transactions (
 id uuid default gen_random_uuid () primary key,
+account_id uuid not null,
 type varchar not null,
 amount  numeric not null,
-currency varchar not null,
 source varchar not null,
 destination varchar not null,
 created_at timestamp default now(),
 updated_at timestamp default now(),
-created_by varchar not null,
 status varchar not null
 );
+
+alter table transactions add constraint tx_account_fk foreign key (account_id) references accounts (id);
 
 create table rates (
 id uuid default gen_random_uuid () primary key,
@@ -32,12 +33,14 @@ rate numeric not null
 
 create table cards (
 id uuid default gen_random_uuid () primary key,
+holder varchar not null,
 account_id uuid not null,
 card_type varchar not null,
 card_number varchar not null,
-exp_month numeric not null,
-exp_year numeric not null
+csv numeric(3) not null,
+expiration varchar not null
 );
 
 alter table cards add constraint card_account_fk foreign key (account_id) references accounts (id);
+
 

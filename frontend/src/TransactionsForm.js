@@ -10,10 +10,14 @@ import { getToken } from "./store";
 const TransactionsForm = () => {
   const [tab, setTab] = useState("deposit");
   const [messages, setMessages] = useState([]);
+  const [card, setCard] = useState();
+  const [destination, setDestination] = useState("");
+  const [currency, setCurrency] = useState();
   const [cards, setCards] = useState([]);
   const [amount, setAmount] = useState();
   const [exchangeAmount, setExchangeAmount] = useState(123);
   const [validAmount, setValidAmount] = useState(true);
+  const [validDestination, setValidDestination] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -34,8 +38,12 @@ const TransactionsForm = () => {
         // succesful fetch
         setMessages([]);
         setCards(resp);
+        if (resp.length > 0) {
+          setCard(resp[0]);
+        }
       }
     };
+    setCurrency("USD");
     getCards();
   }, []);
 
@@ -48,19 +56,47 @@ const TransactionsForm = () => {
       setValidAmount(false);
       result = false;
     }
+    if (tab === "transfer" && (!destination || destination.length < 8)) {
+      errs = [...errs, "Destination length should be greater than 8"];
+      setValidDestination(false);
+      result = false;
+    }
     setMessages(errs);
+    return result;
+  };
+
+  const postExchangeTx = async () => {
+    setMessages([]);
   };
 
   const postTx = async () => {
     setIsLoading(true);
     setMessages([]);
+    const token = getToken();
+    let payload = { type: tab, status: "OK", amount: amount };
+    console.log(tab);
+    console.log(card);
+    console.log(currency);
+    switch (tab) {
+      case "deposit":
+        payload.source = card;
+        payload.destination = currency;
+        break;
+      case "withdraw":
+        payload.source = currency;
+        payload.destination = card;
+        break;
+      case "transfer":
+        payload.source = currency;
+        payload.destination = destination;
+        break;
+    }
+
     const resp = await restFetch(
       "POST",
       API_URL + `/transactions`,
-      { "Content-Type": "application/json" },
-      JSON.stringify({
-        amount,
-      })
+      { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      JSON.stringify(payload)
     );
     setIsLoading(false);
     if (resp.hasOwnProperty("error")) {
@@ -68,7 +104,6 @@ const TransactionsForm = () => {
       setMessages([resp.error]);
     } else {
       // succesful post
-      setMessages([]);
       setMessages(["Transaction successfuly created"]);
     }
   };
@@ -149,6 +184,7 @@ const TransactionsForm = () => {
               <select
                 className="w-100 br2 mt2 h2 db f6 bg-blue white"
                 name="currency"
+                onChange={(ev) => setCurrency(ev.target.value)}
               >
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
@@ -157,27 +193,48 @@ const TransactionsForm = () => {
             </div>
           </div>
           <div className="fl w-100 pa2">
-            <div className="white tc pv0 truncate no-wrap">
-              <label className="db tl fw6 lh-copy f5">Credit Card</label>
-              <select
-                className="w-100 br2 mt2 h2 db f6 bg-blue white"
-                name="creditcard"
-              >
-                {cards.map((el) => (
-                  <option value="USD">
-                    {el.card_type} {el.card_number}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {tab !== "transfer" ? (
+              <div className="white tc pv0 truncate no-wrap">
+                <label className="db tl fw6 lh-copy f5">Credit Card</label>
+                <select
+                  className="w-100 br2 mt2 h2 db f6 bg-blue white"
+                  name="creditcard"
+                  onChange={(ev) => setCard(ev.target.value)}
+                >
+                  {cards.map((el) => (
+                    <option value="USD">
+                      {el.card_type} {el.card_number}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="white tc pv0 truncate no-wrap">
+                <label className="db tl fw6 lh-copy f5">Destination</label>
+                <input
+                  className={`mt2 fl pa2 f5 tl input-reset ba br3 bg-transparent hover-bg-blue hover-white white w-80 ${
+                    validDestination ? "b--light-blue" : "b--red"
+                  }`}
+                  type="text"
+                  name="destination"
+                  onChange={(ev) => {
+                    setMessages([]);
+                    setValidDestination(true);
+                    setDestination(ev.target.value);
+                  }}
+                  value={destination}
+                />
+              </div>
+            )}
           </div>
           <div className="fl w-100 pa2 mt3">
             <div
               className="link ttu dim br3 bg-blue white pv2 ph3 f5 f5-l dib mr3 mr4-l pointer"
-              title="Login"
+              title="post"
               onClick={() => {
-                validateFields();
-                //postTx();
+                if (validateFields()) {
+                  postTx();
+                }
               }}
             >
               {tab}
@@ -249,10 +306,11 @@ const TransactionsForm = () => {
           <div className="fl w-100 pa2 mt3">
             <div
               className="link ttu dim br3 bg-blue white pv2 ph3 f5 f5-l dib mr3 mr4-l pointer"
-              title="Login"
+              title="post exchange tx"
               onClick={() => {
-                validateFields();
-                //postTx();
+                if (validateFields()) {
+                  postExchangeTx();
+                }
               }}
             >
               {tab}

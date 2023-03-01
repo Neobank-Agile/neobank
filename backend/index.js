@@ -11,6 +11,7 @@ const accounts = require("./accounts");
 const rates = require("./rates");
 const cards = require("./cards");
 const auth = require("./auth");
+const transactions = require("./transactions");
 
 app.use(cors());
 app.use(morgan("tiny"));
@@ -32,6 +33,9 @@ app.get("/rates", auth.authorized, rates.getRates);
 app.post("/cards", auth.authorized, cards.createCard);
 app.get("/cards", auth.authorized, cards.getCards);
 app.delete("/cards", auth.authorized, cards.deleteCard);
+app.post("/transactions", auth.authorized, transactions.createTransaction);
+app.get("/transactions", auth.authorized, transactions.getTransactions);
+app.get("/balances", auth.authorized, transactions.getBalances);
 
 // administrative routes
 app.post("/rates", auth.admin, rates.createRate);

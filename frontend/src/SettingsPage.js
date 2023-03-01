@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-//import { useParams, useNavigate } from "react-router-dom";
 import Menu from "./Menu";
 import MessageBox from "./MessageBox";
 import { getCardType, restFetch } from "./utils";
@@ -109,7 +108,7 @@ const SettingsPage = () => {
         <main className="pa4 white">
           <form className="measure center ba b--light-blue br3">
             <div className="w-100 center tc bg-blue">
-              <div className="fl w-100 pa3 bg-navy f2 br3 br--top">
+              <div className="fl w-100 pa3 bg-navy f3 br3 br--top">
                 Add credit card
               </div>
             </div>
@@ -188,7 +187,7 @@ const SettingsPage = () => {
         </main>
       ) : (
         <article>
-          <div className="f2 fw3 pa3 mv2 tc">
+          <div className="f3 fw3 pa3 mv2 tc">
             {cards.length < 1 ? "No available cards" : "Available cards"}
             <img
               className="ml3 w2 h2 dib link dim pointer"

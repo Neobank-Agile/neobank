@@ -10,6 +10,14 @@ const createCard = (request, response) => {
     (error, results) => {
       if (error) {
         response.status(500).send({ error });
+        return;
+      }
+
+      if (!results.rows) {
+        response
+          .status(422)
+          .send({ error: "invalid parameters to create card" });
+        return;
       }
 
       response.status(201).send({
@@ -36,6 +44,12 @@ const getCards = (request, response) => {
         response.status(500).send(error);
         return;
       }
+
+      if (!results.rows) {
+        response.status(422).send({ error: "cannot retrieve rows" });
+        return;
+      }
+
       response.status(200).send(results.rows);
     }
   );
@@ -48,6 +62,7 @@ const deleteCard = (request, response) => {
   pool.query("delete from cards where id = $1", [id], (error, results) => {
     if (error) {
       response.status(500).send({ error });
+      return;
     }
 
     response.status(200).send({ ok: true });

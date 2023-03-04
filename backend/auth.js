@@ -19,7 +19,7 @@ const login = (request, response) => {
         return;
       }
 
-      if (!result.rows || results.rows.length !== 1) {
+      if (!results.rows || results.rows.length !== 1) {
         response.status(422).send({ error: "invalid login" });
         return;
       }

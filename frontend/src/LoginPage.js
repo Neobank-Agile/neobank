@@ -163,7 +163,7 @@ const LoginPage = () => {
                   />
                 </div>
               </fieldset>
-              <div>
+              <div className="dib w-100 tl">
                 <MessageBox messages={messages} />
               </div>
               <div className="center tc">

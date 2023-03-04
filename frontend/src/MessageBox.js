@@ -4,11 +4,16 @@ const MessageBox = (props) => {
   if (messages.length < 1) {
     return <></>;
   }
+  const success = messages.length === 1 && messages[0].includes("success");
   return (
-    <div className="pt0 pb2">
-      <ul className="ml2 measure center">
+    <div
+      className={`pa2 dib f4 br3 measure center ${
+        success ? "bg-green" : "bg-red"
+      }`}
+    >
+      <ul className="list pa2">
         {messages.map((msg, ix) => (
-          <li className="lh-copy pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30">
+          <li key={ix} className="pa1">
             {msg}
           </li>
         ))}

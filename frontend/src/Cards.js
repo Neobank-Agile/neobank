@@ -257,7 +257,7 @@ const Cards = () => {
                         className="fr link dim pointer"
                         onClick={async () => await removeCard(ix)}
                       >
-                        <img className="w1 h1 dib" src={trash} alt="trash" />{" "}
+                        <img className="w2 h2 dib" src={trash} alt="trash" />{" "}
                       </span>
                     </dd>
                     <dt className="clip">Number</dt>

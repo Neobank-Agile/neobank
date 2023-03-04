@@ -10,6 +10,14 @@ const createTransaction = (request, response) => {
     (error, results) => {
       if (error) {
         response.status(500).send({ error });
+        return;
+      }
+
+      if (!results.rows) {
+        response
+          .status(422)
+          .send({ error: "invalid parameters to create transaction" });
+        return;
       }
 
       response.status(201).send({
@@ -36,6 +44,12 @@ const getTransactions = (request, response) => {
         response.status(500).send(error);
         return;
       }
+
+      if (!results.rows) {
+        response.status(422).send({ error: "cannot get rows" });
+        return;
+      }
+
       response.status(200).send(results.rows);
     }
   );
@@ -52,6 +66,12 @@ const getBalances = (request, response) => {
         response.status(500).send(error);
         return;
       }
+
+      if (!results.rows) {
+        response.status(422).send({ error: "cannot get balance rows" });
+        return;
+      }
+
       response.status(200).send(results.rows);
     }
   );

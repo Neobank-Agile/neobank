@@ -12,6 +12,13 @@ const createAccount = (request, response) => {
         return;
       }
 
+      if (!results.rows) {
+        response
+          .status(422)
+          .send({ error: "invalid parameters to create account" });
+        return;
+      }
+
       response.status(201).send({
         id: results.rows[0].id,
         username,

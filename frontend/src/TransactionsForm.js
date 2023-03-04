@@ -336,7 +336,7 @@ const TransactionsForm = () => {
             )}
           </div>
           <div className="fl w-100 pa2 mt3">
-            <div className="f5 mt2">
+            <div className="f5 mv2">
               {messages ? <MessageBox messages={messages} /> : null}
             </div>
             <div

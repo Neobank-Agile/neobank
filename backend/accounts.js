@@ -32,21 +32,19 @@ const createAccount = (request, response) => {
 };
 
 const updateAccount = (request, response) => {
-  const { password, status, id } = request.body;
+  const { username, email, phone, password } = request.body;
+  // retrieve user id from auth token
+  const account_id = response.locals.userId;
 
-  if (!id) {
-    response.status(422).send({ error: "no id provided" });
-    return;
-  }
-  if (!password && !status) {
-    response
-      .status(422)
-      .send({ error: "password or status should be provided" });
+  if (!password || !email || !phone || !username || !account_id) {
+    response.status(422).send({
+      error: "account id, password , email , phone and username are required",
+    });
     return;
   }
   pool.query(
-    "update accounts set password=coalesce($1,password), status=coalesce($2,status) where id = $3",
-    [password, status, id],
+    "update accounts set username = coalesce($1,username), email= coalesce($2,email), phone = coalesce(phone, $3),  password=coalesce($4,password) where id = $5",
+    [username, email, phone, password, account_id],
     (error, results) => {
       if (error) {
         response.status(500).send({ error });
@@ -58,17 +56,18 @@ const updateAccount = (request, response) => {
 };
 
 const getAccount = (request, response) => {
-  if (!request.query.id) {
-    response.status(422).send({ error: "no id provided" });
-    return;
-  }
-  const id = request.query.id;
+  // retrieve user id from auth token
+  const account_id = response.locals.userId;
   pool.query(
     "select * from accounts where id  = $1 ",
-    [id],
+    [account_id],
     (error, results) => {
       if (error) {
         response.status(500).send(error);
+        return;
+      }
+      if (!results.rows) {
+        response.status(422).send({ error: "account not found" });
         return;
       }
       response.status(200).send(results.rows);

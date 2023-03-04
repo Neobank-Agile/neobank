@@ -34,12 +34,12 @@ const Balances = () => {
   return (
     <>
       {isLoading ? (
-        <div className="center tc mt3">
+        <div className="center tc mv3 w-100">
           <img className="w3 h3 dib" src={loading} alt="loading..." />
         </div>
       ) : null}
       {messages ? <MessageBox messages={messages} /> : null}
-      <div className="pa4 f3 white measure center ba b--light-blue br3 pa3">
+      <div className="pa4 f3 dib w-100 white measure center ba b--light-blue br3 pa3 mv3 dib">
         {balances.length < 1 ? (
           <div>No balances. Make a deposit</div>
         ) : (

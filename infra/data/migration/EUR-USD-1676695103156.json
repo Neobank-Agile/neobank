@@ -144,7 +144,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time_stamp, 1/rate FROM rates WHERE curr_from='usd' AND curr_to='eur';",
+          "rawSql": "SELECT time_stamp, 1/rate FROM hist_rates WHERE curr_from='usd' AND curr_to='eur';",
           "refId": "A",
           "sql": {
             "columns": [

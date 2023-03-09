@@ -145,7 +145,7 @@
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT time_stamp, rate FROM rates WHERE curr_from='usd' AND curr_to='btc';",
+          "rawSql": "SELECT time_stamp, rate FROM hist_rates WHERE curr_from='usd' AND curr_to='btc';",
           "refId": "A",
           "sql": {
             "columns": [

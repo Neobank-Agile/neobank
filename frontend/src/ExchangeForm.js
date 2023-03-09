@@ -9,7 +9,7 @@ import { getToken } from "./store";
 const ExchangeForm = (props) => {
   const [messages, setMessages] = useState([]);
   const [from, setFrom] = useState("USD");
-  const [to, setTo] = useState("USD");
+  const [to, setTo] = useState("EUR");
   const [currency, setCurrency] = useState();
   const [rates, setRates] = useState({});
   const [amt, setAmt] = useState(100);
@@ -58,6 +58,9 @@ const ExchangeForm = (props) => {
     const fr = from;
     setFrom(to);
     setTo(fr);
+    if (props.setPair) {
+      props.setPair(fr+"-"+to);
+    }
   };
 
   const validateFields = () => {
@@ -159,6 +162,9 @@ const ExchangeForm = (props) => {
                 name="from"
                 onChange={(ev) => {
                   setFrom(ev.target.value);
+                  if (props.setPair) {
+                    props.setPair(ev.target.value+"-"+to);
+                  }
                 }}
                 value={from}
               >
@@ -194,6 +200,9 @@ const ExchangeForm = (props) => {
                 name="to"
                 onChange={(ev) => {
                   setTo(ev.target.value);
+                  if (props.setPair) {
+                    props.setPair(from+"-"+ev.target.value);
+                  }
                 }}
                 value={to}
               >

@@ -17,29 +17,19 @@ const createRate = (request, response) => {
           .send({ error: "invalid parameters to create rate" });
         return;
       }
-    );
-  }
-  catch (err) {
-    console.error(err);
-  }
+
+      response.status(201).send({
+        id: results.rows[0].id,
+        from,
+        to,
+        rate,
+      });
+    }
+  );
 };
 
 const getRates = (request, response) => {
-  let { timestamp, from, to } = request.query;
-  // debug
-  // console.log(timestamp, from, to);
-
-  let query = "";
-  if (from === "usd") {
-    to = to ?? 'eur';
-    query = "select time_stamp, rate from rates where time_stamp=COALESCE($1, '2023-02-15')::timestamp and curr_from=$2 and curr_to=$3;"
-  }
-  else {
-    from = from ?? 'eur';
-    to = to ?? 'usd';
-    query = "select time_stamp, (1/rate) as rate from rates where time_stamp=COALESCE($1, '2023-02-15')::timestamp and curr_from=$3 and curr_to=$2;"
-  }
-
+  const { from, to } = request.query;
   pool.query(
     "select curr_from,curr_to, max(rate) as rate from rates where curr_from  = coalesce($1,curr_from) and curr_to = coalesce($2,curr_to) group by 1,2 ",
     [from, to],

@@ -1,7 +1,10 @@
+import { useState } from "react";
 import Menu from "./Menu";
 import ExchangeForm from "./ExchangeForm";
+import ExchangeGraph from "./ExchangeGraph";
 
 const LandingPage = () => {
+  const [pair,setPair] = useState("USD-EUR");
   return (
     <>
       <Menu />
@@ -13,9 +16,9 @@ const LandingPage = () => {
           Simple, centralized currencies management.
         </h2>
       </div>
-      <ExchangeForm postEnabled={false} />
+      <ExchangeForm postEnabled={false} setPair={ (pair) => setPair(pair)} />
       <div className="center tc mt3 ph3">
-        <img className="w-100 mw7" alt="graph" src="graph.png" />
+        <ExchangeGraph pair={pair}/>
       </div>
       <div className="center tc mt3 mt4-m mt5-l ph3">
         <h1 className="f3 f2-l fw2 white-90 mb0 lh-title">
